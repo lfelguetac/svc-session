@@ -66,7 +66,7 @@ func GetUserSession(c *gin.Context) {
 
 func DeleteUserSession(c *gin.Context) {
 	id := c.Param("id")
-	err := repository.DeleteUserSession(id)
+	err := repository.DeleteUserSessions(id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
