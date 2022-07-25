@@ -28,3 +28,13 @@ func GetUserSession(id string) (*UserSession, error) {
 	}
 	return &userSession, nil
 }
+
+func DeleteUserSessions(userId string) error {
+
+	_err := redisClient.Del(userId).Err()
+	if _err != nil {
+		fmt.Println(_err)
+		return errors.New(_err.Error())
+	}
+	return nil
+}

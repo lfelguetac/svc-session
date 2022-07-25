@@ -2,11 +2,12 @@ package routers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	. "session-service-v2/app/model"
 	"session-service-v2/app/repository"
 	. "session-service-v2/app/utils"
+
+	"github.com/gin-gonic/gin"
 
 	"strconv"
 )
@@ -59,6 +60,17 @@ func GetUserSession(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
-	c.JSON(200, userSession)
+	c.JSON(http.StatusOK, userSession)
+	return
+}
+
+func DeleteUserSession(c *gin.Context) {
+	id := c.Param("id")
+	err := repository.DeleteUserSession(id)
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.AbortWithStatus(http.StatusOK)
 	return
 }

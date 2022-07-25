@@ -1,8 +1,9 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	routers "session-service-v2/app/routers/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
@@ -10,6 +11,7 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/users", routers.CreateUserSession)
 	r.GET("/users/:id", routers.GetUserSession)
+	r.DELETE("/users/:id", routers.DeleteUserSession)
 
 	return r
 }
