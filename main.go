@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"session-service-v2/app/routers"
+	. "session-service-v2/app/utils"
 )
 
 func main() {
@@ -11,6 +12,9 @@ func main() {
 	// Init Gin
 	r := routers.InitRouter()
 
+
+	port := GetStringEnv("APP_PORT", "8080")
+
 	// Run server
-	r.Run()
+	r.Run(":" + port)
 }

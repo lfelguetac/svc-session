@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func GetEnvString(key, defaultValue string) string {
+func GetStringEnv(key, defaultValue string) string {
 	value, ok := os.LookupEnv(key)
 	if ok {
 		return value

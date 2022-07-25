@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetEnvStringWithoudDefined(t *testing.T) {
-	envValue := utils.GetEnvString("F001", "defaultValue")
+	envValue := utils.GetStringEnv("F001", "defaultValue")
 	if envValue != "defaultValue" {
 		t.Errorf("GetEnvString(\"F001\", \"defaultValue\") FAILED. Expected %s, got %s\n", "defaultValue", envValue)
 	} else {
@@ -17,7 +17,7 @@ func TestGetEnvStringWithoudDefined(t *testing.T) {
 func TestGetEnvStringDefined(t *testing.T) {
 	t.Setenv("F002", "defined")
 
-	envValue := utils.GetEnvString("F002", "default")
+	envValue := utils.GetStringEnv("F002", "default")
 	if envValue != "defined" {
 		t.Errorf("GetEnvString(\"F002\", \"default\") FAILED. Expected %s, got %s\n", "defined", envValue)
 	} else {
