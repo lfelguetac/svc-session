@@ -1,39 +1,54 @@
 package routers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"session-service-v2/app/model"
+	. "session-service-v2/app/model"
 	"session-service-v2/app/repository"
+	. "session-service-v2/app/utils"
+
+	"strconv"
 )
 
+var multiDevice bool
+
+func init() {
+	multiDevice = GetBoolEnv("MULTIDEVICE_ENABLED", false)
+	fmt.Println("Multidevice enabled: " + strconv.FormatBool(multiDevice))
+}
+
 func CreateUserSession(c *gin.Context) {
-	req := model.SessionRequest{}
+	req := SessionRequest{}
 	c.ShouldBindJSON(&req)
-	//
-	//session := model.Session{
-	//	Jwt:         req.Jwt,
-	//	Fingerprint: req.Fingerprint,
-	//	Ttl:         req.Ttl,
-	//}
-	//
-	//userSession, err := repository.GetUserSession(req.User)
-	//
-	//if err != nil {
-	//	userSession.Sessions: append(userSession.Sessions, session)
-	//
-	//	err = repository.CreateUserSession(userSession)
-	//} else {
-	//	userSession := model.UserSession{
-	//		Sessions: []model.Session{session},
-	//	}
-	//	err = repository.CreateUserSession(userSession)
-	//}
-	//
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"message": "error creating"})
-	//	return
-	//}
+
+	session := Session{
+		Jwt:         req.Jwt,
+		Fingerprint: req.Fingerprint,
+		Ttl:         req.Ttl,
+	}
+
+	userSession, err := repository.GetUserSession(req.User)
+
+	if err != nil {
+		userSession := UserSession{
+			Sessions: []Session{session},
+		}
+		err = repository.SetUserSession(req.User, userSession, req.Ttl)
+	} else {
+		if multiDevice {
+			userSession.Sessions = append([]Session{session}, userSession.Sessions...)
+			err = repository.SetUserSession(req.User, *userSession, req.Ttl)
+		} else {
+			userSession.Sessions = []Session{session}
+			err = repository.SetUserSession(req.User, *userSession, req.Ttl)
+		}
+	}
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error creating"})
+		return
+	}
 	c.AbortWithStatus(http.StatusCreated)
 }
 

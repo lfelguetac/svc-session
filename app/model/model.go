@@ -7,12 +7,12 @@ type UserSession struct {
 type Session struct {
 	Jwt         string `json:"jwt"`
 	Fingerprint string `json:"fingerprint"`
-	Ttl         string `json:"ttl"`
+	Ttl         int    `json:"ttl"`
 }
 
 type SessionRequest struct {
 	User        string `json:"user"`
 	Jwt         string `json:"jwt"`
 	Fingerprint string `json:"fingerprint"`
-	Ttl         string `json:"ttl"`
+	Ttl         int    `json:"ttl"`
 }
