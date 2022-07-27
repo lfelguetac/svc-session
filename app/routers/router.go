@@ -9,9 +9,11 @@ import (
 func InitRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.POST("/users", routers.CreateUserSession)
-	r.GET("/users/:id", routers.GetUserSession)
-	r.DELETE("/users/:id", routers.DeleteUserSession)
+	r.POST("/user", routers.CreateUserSession)
+	r.GET("/user/:userId", routers.GetUserSessions)
+	r.GET("/user/:userId/:client/:fingerPrint", routers.GetUserSession)
+	r.DELETE("/user/:userId", routers.DeleteUserSessions)
+	r.DELETE("/user/:userId/:client/:fingerPrint", routers.DeleteUserSession)
 
 	return r
 }

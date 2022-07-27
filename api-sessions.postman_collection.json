@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "134a7809-46ed-44f1-bdf9-9af1bc6de2b2",
+		"name": "Api sessions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3433330"
+	},
+	"item": [
+		{
+			"name": "Create User Session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"federico\",\n    \"client\": \"FPAY\",\n    \"fingerprint\": \"Fingerprint1\",\n    \"ttl\": \"1h\",\n    \"data\": {\n        \"core_id\": \"111111111\",\n        \"first_name\": \"Federico\",\n        \"last_name\": \"DAu\",\n        \"fingerprint\": \"Fingerprint1\",\n        \"token\": \"tokenValue\",\n        \"refreshToken\": \"refreshTokenValue\",\n        \"country\": \"co\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Session",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/federico/WEB/Fingerprint2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"federico",
+						"WEB",
+						"Fingerprint2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Sessions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/fede/FPAY/fingerprintDePrueba",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"fede",
+						"FPAY",
+						"fingerprintDePrueba"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Session",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"profile_id\": \"profileIdValue\",\n    \"client_id\": 1,\n    \"fingerprint\": \"3\",\n    \"ttl\": 3,\n    \"data\": {\n        \"core_id\": \"coreIdValue\",\n        \"first_name\": \"firstNameValue\",\n        \"last_name\": \"lastNameValue\",\n        \"fingerprint\": \"3\",\n        \"token\": \"tokenValue\",\n        \"refresh_token\": \"refreshTokenValue\",\n        \"country\": \"countryValue\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/federico/DESKTOP/fingerprintDePrueba",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"federico",
+						"DESKTOP",
+						"fingerprintDePrueba"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Sessions",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"profile_id\": \"profileIdValue\",\n    \"client_id\": 1,\n    \"fingerprint\": \"3\",\n    \"ttl\": 3,\n    \"data\": {\n        \"core_id\": \"coreIdValue\",\n        \"first_name\": \"firstNameValue\",\n        \"last_name\": \"lastNameValue\",\n        \"fingerprint\": \"3\",\n        \"token\": \"tokenValue\",\n        \"refresh_token\": \"refreshTokenValue\",\n        \"country\": \"countryValue\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/prueba-multidevice",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"prueba-multidevice"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
