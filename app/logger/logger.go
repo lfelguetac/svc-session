@@ -78,15 +78,6 @@ func createLogger() *log.Entry {
 
 }
 
-// Util to add default to getenv function
-func getenv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
-	}
-	return value
-}
-
 // log-{service-name}-18-06-2021-8455fe470e7d.log
 func getFileName(serviceName string) string {
 
