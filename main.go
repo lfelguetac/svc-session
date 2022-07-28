@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting Mock Server")
+	fmt.Println("Starting API Sessions")
 
 	// Init Gin
 	r := routers.InitRouter()

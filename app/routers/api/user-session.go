@@ -1,13 +1,21 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"session-service-v2/app/logger"
 	. "session-service-v2/app/model"
 	"session-service-v2/app/services"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
+var log *logrus.Entry = logger.GetLogger()
+
 func CreateUserSession(c *gin.Context) {
+
+	log.Info("Trying to create user session")
+
 	req := SessionRequest{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {

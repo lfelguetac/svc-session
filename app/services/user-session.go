@@ -19,6 +19,7 @@ func init() {
 func CreateUserSession(userId, client string, session SessionData, ttl string) error {
 	userSession, _err := repositories.GetUserSessions(userId)
 
+	// TODO: check only KEY not found error
 	if _err != nil {
 		userSession := UserSession{
 			Sessions: []SessionData{session},
