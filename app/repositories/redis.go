@@ -2,9 +2,10 @@ package repositories
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/go-redis/redis"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 var redisClient *redis.Client
@@ -27,5 +28,9 @@ func init() {
 	}
 	fmt.Println(pong)
 
+	redisClient = client
+}
+
+func SetClient(client *redis.Client){
 	redisClient = client
 }

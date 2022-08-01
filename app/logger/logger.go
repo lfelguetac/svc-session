@@ -15,15 +15,16 @@ import (
 
 var lock = &sync.Mutex{}
 var logger *log.Entry
-
-var logFilePath, env, logLevel, serviceName string
+var logFilePath, env, logLevel, serviceName, hostName, country string
 
 func init() {
 	godotenv.Load()
 	logFilePath = GetStringEnv("LOG_FILE_PATH", "/var/log/pm2/")
 	logLevel = GetStringEnv("LOG_LEVEL", "info")
-	serviceName = GetStringEnv("SERVICE_NAME", "service")
+	serviceName = GetStringEnv("SERVICE_NAME", "api-sessions")
 	env = GetStringEnv("ENV", "local")
+	country = GetStringEnv("COUNTRY", "-")
+	hostName, _ = os.Hostname()
 }
 
 func GetLogger() *log.Entry {
@@ -73,18 +74,24 @@ func createLogger() *log.Entry {
 
 	// Setting default fields
 	return logger.WithFields(log.Fields{
-		"service":     serviceName,
-		"environment": env})
+		"country": country,
+		"serviceHost": hostName,
+		"service": serviceName,
+		"environment": env,
+		"source": "go",
+		"version": "1.0.0", // TODO: retrieve image version
+		"app": "common",
+		"team": "wallet"})
+
+    // TODO: write header fields
 
 }
 
 // log-{service-name}-18-06-2021-8455fe470e7d.log
 func getFileName(serviceName string) string {
 
-	hostname, _ := os.Hostname()
-
 	return fmt.Sprintf("log-%s-%s-%s.log",
 		serviceName,
 		time.Now().Format("01-02-2006"),
-		hostname)
+		hostName)
 }

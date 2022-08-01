@@ -3,12 +3,15 @@ module session-service-v2
 go 1.17
 
 require (
+	github.com/alicebob/miniredis/v2 v2.22.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/joho/godotenv v1.4.0
+	github.com/sirupsen/logrus v1.9.0
 )
 
 require (
+	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -22,10 +25,11 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.19.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
+	github.com/yuin/gopher-lua v0.0.0-20210529063254-f4c35e4016d9 // indirect
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
