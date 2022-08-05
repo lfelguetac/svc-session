@@ -7,21 +7,21 @@ import (
 	"session-service-v2/app/services"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
-var log *logrus.Entry = logger.GetLogger()
+var log *logger.FpayLogger = logger.GetLogger()
 
 func CreateUserSession(c *gin.Context) {
 
-	log.Info("Trying to create user session")
-
+	
 	req := SessionRequest{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+	
+	log.Info("Trying to create user session", map[string]string{"userId": req.UserId} )
 
 	userId, client, ttl := req.UserId, req.Client, req.Ttl
 

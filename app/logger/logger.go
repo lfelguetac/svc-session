@@ -14,7 +14,7 @@ import (
 )
 
 var lock = &sync.Mutex{}
-var logger *log.Entry
+var logger *FpayLogger
 var logFilePath, env, logLevel, serviceName, hostName, country string
 
 func init() {
@@ -27,12 +27,51 @@ func init() {
 	hostName, _ = os.Hostname()
 }
 
-func GetLogger() *log.Entry {
+// type FpayLogger interface {
+// }
+
+type FpayLogger struct {
+	logEntry *log.Entry
+}
+
+func (logger *FpayLogger) Info(message string, args ...interface{}) {
+	if len(args) == 0 {
+        logger.logEntry.Info(message)
+    } else {
+		logger.logEntry.WithField("metadata", args[0]).Info(message)
+    }
+}
+
+func (logger *FpayLogger) Warn(message string, args ...interface{}) {
+	if len(args) == 0 {
+        logger.logEntry.Warn(message)
+    } else {
+		logger.logEntry.WithField("metadata", args[0]).Warn(message)
+    }
+}
+
+func (logger *FpayLogger) Error(message string, args ...interface{}) {
+	if len(args) == 0 {
+        logger.logEntry.Error(message)
+    } else {
+		logger.logEntry.WithField("metadata", args[0]).Error(message)
+    }
+}
+
+func (logger *FpayLogger) Debug(message string, args ...interface{}) {
+	if len(args) == 0 {
+        logger.logEntry.Debug(message)
+    } else {
+		logger.logEntry.WithField("metadata", args[0]).Debug(message)
+    }
+}
+
+func GetLogger() *FpayLogger {
 	if logger == nil {
 		lock.Lock()
 		defer lock.Unlock()
 		if logger == nil {
-			logger = createLogger()
+			logger = &FpayLogger{logEntry: createLogger()}
 		}
 	}
 
