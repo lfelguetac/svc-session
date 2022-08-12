@@ -16,7 +16,6 @@ func main() {
 	// defer config.CloseDBConnection(db)
 
 	r := gin.Default()
-	gin.SetMode(gin.ReleaseMode)
 
 	md := utils.GetBoolEnv("MULTIDEVICE_ENABLED", false)
 
