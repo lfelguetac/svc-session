@@ -1,4 +1,4 @@
-package routers
+package controller
 
 import (
 	"net/http"
@@ -9,19 +9,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UserSessionController interface {
+	CreateUserSession(c *gin.Context)
+	GetUserSessions(c *gin.Context)
+	GetUserSession(c *gin.Context)
+	DeleteUserSession(c *gin.Context)
+	DeleteUserSessions(c *gin.Context)
+}
+
+// this struct used to accommodate all the services needed
+type controller struct {
+	userService services.UserService
+}
+
+func NewUserSessionController(userSvc services.UserService) UserSessionController {
+	return &controller{
+		userService: userSvc,
+	}
+}
+
 var log *logger.FpayLogger = logger.GetLogger()
 
-func CreateUserSession(c *gin.Context) {
+func (ctr *controller) CreateUserSession(c *gin.Context) {
 
-	
 	req := SessionRequest{}
+
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	
-	log.Info("Trying to create user session", map[string]string{"userId": req.UserId} )
+
+	log.Info("Trying to create user session", map[string]string{"userId": req.UserId})
 
 	userId, client, ttl := req.UserId, req.Client, req.Ttl
 
@@ -37,7 +56,7 @@ func CreateUserSession(c *gin.Context) {
 		Ttl:          req.Ttl,
 	}
 
-	_err := services.CreateUserSession(userId, client, session, ttl)
+	_err := ctr.userService.CreateUserSession(userId, client, session, ttl)
 
 	if _err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "error creating"})
@@ -46,10 +65,11 @@ func CreateUserSession(c *gin.Context) {
 	c.AbortWithStatus(http.StatusCreated)
 }
 
-func GetUserSessions(c *gin.Context) {
+func (ctr *controller) GetUserSessions(c *gin.Context) {
+
 	userId := c.Param("userId")
 
-	sessions, _err := services.GetUserSessions(userId)
+	sessions, _err := ctr.userService.GetUserSessions(userId)
 	if _err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -58,25 +78,12 @@ func GetUserSessions(c *gin.Context) {
 	return
 }
 
-func GetUserSessionsForClient(c *gin.Context) {
-	userId := c.Param("userId")
-	client := c.Param("client")
-
-	sessions, _err := services.GetUserSession(userId, client, "")
-	if _err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-	c.JSON(http.StatusOK, sessions)
-	return
-}
-
-func GetUserSession(c *gin.Context) {
+func (ctr *controller) GetUserSession(c *gin.Context) {
 	userId := c.Param("userId")
 	client := c.Param("client")
 	fingerPrint := c.Param("fingerPrint")
 
-	session, _err := services.GetUserSession(userId, client, fingerPrint)
+	session, _err := ctr.userService.GetUserSession(userId, client, fingerPrint)
 	if _err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -85,9 +92,9 @@ func GetUserSession(c *gin.Context) {
 	return
 }
 
-func DeleteUserSessions(c *gin.Context) {
+func (ctr *controller) DeleteUserSessions(c *gin.Context) {
 	userId := c.Param("userId")
-	_err := services.DeleteUserSessions(userId)
+	_err := ctr.userService.DeleteUserSessions(userId)
 	if _err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
@@ -96,12 +103,12 @@ func DeleteUserSessions(c *gin.Context) {
 	return
 }
 
-func DeleteUserSession(c *gin.Context) {
+func (ctr *controller) DeleteUserSession(c *gin.Context) {
 	userId := c.Param("userId")
 	client := c.Param("client")
 	fingerPrint := c.Param("fingerPrint")
 
-	_err := services.DeleteUserSession(userId, client, fingerPrint)
+	_err := ctr.userService.DeleteUserSession(userId, client, fingerPrint)
 	if _err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 		return

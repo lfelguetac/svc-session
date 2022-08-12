@@ -1,0 +1,7 @@
+run coverage with output
+go test ./... -coverprofile=coverage.out
+go test -cover ./... 
+
+go tool cover -html=coverage.out
+
+go env -w GO111MODULE=off

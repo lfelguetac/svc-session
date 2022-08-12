@@ -1,20 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"session-service-v2/app/routers"
-	. "session-service-v2/app/utils"
+	"session-service-v2/app/config"
+	"session-service-v2/app/delivery/controller"
+	"session-service-v2/app/delivery/http"
+	"session-service-v2/app/repositories"
+	"session-service-v2/app/services"
+	"session-service-v2/app/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("Starting API Sessions")
+	db := config.SetupDBConnection()
+	// defer config.CloseDBConnection(db)
 
-	// Init Gin
-	r := routers.InitRouter()
+	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
 
+	md := utils.GetBoolEnv("MULTIDEVICE_ENABLED", false)
 
-	port := GetStringEnv("APP_PORT", "8080")
+	userRepository := repositories.NewUserSsRepository(db)
+	userService := services.NewUserSSService(userRepository, md)
+	userController := controller.NewUserSessionController(userService)
 
-	// Run server
-	r.Run(":" + port)
+	http.NewAppHandler(r, userController)
+
+	r.Run()
 }
