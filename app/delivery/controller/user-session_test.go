@@ -19,6 +19,7 @@ import (
 )
 
 func BeforeTest(t *testing.T) (controller.UserSessionController, *miniredis.Miniredis, gin.H, string) {
+
 	s := miniredis.RunT(t)
 	client := redis.NewClient(&redis.Options{
 		Addr: s.Addr(),
@@ -28,18 +29,18 @@ func BeforeTest(t *testing.T) (controller.UserSessionController, *miniredis.Mini
 
 	reqBody := gin.H{
 		"Id":     keyID,
-		"Client": "client12",
-		"Ttl":    "001001101",
+		"Client": "client123",
+		"Ttl":    "ttl123",
 		"Data": model.SessionData{
-			Token:        "4554545",
-			RefreshToken: "6566666",
-			Fingerprint:  "finger12",
-			CoreId:       "1212",
+			Token:        "token_1110110010111",
+			RefreshToken: "rtokeen_1100011001",
+			Fingerprint:  "finger123",
+			CoreId:       "coreId123",
 			FirstName:    "felipe",
 			LastName:     "elgueta",
 			Country:      "colbun",
-			Client:       "111",
-			Ttl:          "9874",
+			Client:       "client123",
+			Ttl:          "ttl123",
 		},
 	}
 
@@ -77,22 +78,24 @@ func TestCreateUserSession(t *testing.T) {
 
 func TestGetUserSessions(t *testing.T) {
 
-	ctrl, _, reqBody, keyID := BeforeTest(t)
-	w := httptest.NewRecorder()
-	testContext, _ := gin.CreateTestContext(w)
+	ctrl, mr, reqBody, keyID := BeforeTest(t)
 
 	payload, _ := json.Marshal(reqBody)
-	testContext.Request, _ = http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
-	// testContext.Request.Header.Set("Content-Type", "application/json")
-	ctrl.CreateUserSession(testContext)
-	// bytes, _ := json.Marshal(reqBody)
-	// mr.Set(keyID, "bytes")
+	testContextPost, _ := gin.CreateTestContext(httptest.NewRecorder())
+	testContextPost.Request, _ = http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
+	ctrl.CreateUserSession(testContextPost)
 
-	ctrl.GetUserSessions(testContext)
-	testContext.Request, _ = http.NewRequest("GET", "/user/"+keyID, nil)
+	str, _ := mr.Get(keyID)
+	t.Logf("str::: %s", str)
+
+	testContextGet, _ := gin.CreateTestContext(httptest.NewRecorder())
+	testContextGet.Request, _ = http.NewRequest("GET", "/user/pepe123", nil)
+	ctrl.GetUserSessions(testContextGet)
 
 	expected := 200
-	got := testContext.Writer.Status()
+	got := testContextGet.Writer.Status()
+
+	t.Logf("keyID %s", keyID)
 
 	if expected != got {
 		t.Errorf("expected 200 but got %d", got)
@@ -102,12 +105,41 @@ func TestGetUserSessions(t *testing.T) {
 
 func TestGetUserSession(t *testing.T) {
 
-	ctrl, _, _, keyID := BeforeTest(t)
+	ctrl, mr, _, keyID := BeforeTest(t)
+
+	reqBody := gin.H{
+		"id":     "pepe123",
+		"client": "client123",
+		"ttl":    "ttl123",
+		"data": gin.H{
+			"token":        "token_1110110010111",
+			"refreshToken": "rtokeen_1100011001",
+			"fingerprint":  "finger123",
+			"core_Id":      "coreId123",
+			"first_name":   "felipe",
+			"last_name":    "elgueta",
+			"country":      "colbun",
+			"client":       "client123",
+			"ttl":          "ttl123",
+		},
+	}
+
+	payload, _ := json.Marshal(reqBody)
+	testContextPost, _ := gin.CreateTestContext(httptest.NewRecorder())
+	testContextPost.Request, _ = http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
+	ctrl.CreateUserSession(testContextPost)
+
+	//
+	// 		userRoutes.GET("/:userId/:client/:fingerPrint", handler.userCtrl.GetUserSession)
 	w := httptest.NewRecorder()
 	testContext, _ := gin.CreateTestContext(w)
-
-	testContext.Request, _ = http.NewRequest("GET", "/user/"+keyID+"/client12/finger12", nil)
+	testContext.Request, _ = http.NewRequest("GET", "/user/pepe123/client123/finger123", nil)
 	ctrl.GetUserSession(testContext)
+
+	data, _ := mr.Get(keyID)
+
+	t.Logf("datadatadata %s", data)
+	t.Logf("code code %d", w.Code)
 
 	expected := 200
 	got := testContext.Writer.Status()

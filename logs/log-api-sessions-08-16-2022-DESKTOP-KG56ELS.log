@@ -1,0 +1,1 @@
+{"@timestamp":"2022-08-16T17:20:09-04:00","app":"common","country":"-","description":"Trying to create user session","environment":"other","level":"info","metadata":{"userId":"pepe123"},"service":"api-sessions","serviceHost":"DESKTOP-KG56ELS","source":"go","team":"wallet","version":"1.0.0"}

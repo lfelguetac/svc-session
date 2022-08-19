@@ -20,15 +20,15 @@ func BeforeTest(t *testing.T, md bool) (services.UserService, *miniredis.Minired
 	userSsRepo := repositories.NewUserSsRepository(client)
 
 	mockSession := model.SessionData{
-		Token:        "4554545",
-		RefreshToken: "6566666",
-		Fingerprint:  "121212",
+		Token:        "token_110010101101",
+		RefreshToken: "refreshtoken_1111000111001",
+		Fingerprint:  "finger123",
 		CoreId:       "1212",
 		FirstName:    "felipe",
 		LastName:     "elgueta",
 		Country:      "colbun",
-		Client:       "111",
-		Ttl:          "9874",
+		Client:       "client123",
+		Ttl:          "ttl123",
 	}
 
 	return services.NewUserSSService(userSsRepo, md), s, mockSession
@@ -128,8 +128,8 @@ func TestDeleteUserSession(t *testing.T) {
 
 	keyID := "pepe123"
 
-	userSvc.CreateUserSession(keyID, "client", mockSession, "lala")
-	userSvc.DeleteUserSession(keyID, "client", "lala")
+	userSvc.CreateUserSession(keyID, "client123", mockSession, "ttl123")
+	userSvc.DeleteUserSession(keyID, "client123", "finger123")
 
 	user, err := s.Get(keyID)
 
