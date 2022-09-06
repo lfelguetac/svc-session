@@ -2,10 +2,7 @@ package main
 
 import (
 	"session-service-v2/app/config"
-	"session-service-v2/app/delivery/controller"
 	"session-service-v2/app/delivery/http"
-	"session-service-v2/app/repositories"
-	"session-service-v2/app/services"
 	"session-service-v2/app/utils"
 
 	"github.com/gin-gonic/gin"
@@ -13,17 +10,15 @@ import (
 
 func main() {
 	db := config.SetupDBConnection()
-	// defer config.CloseDBConnection(db)
+	defer config.CloseDBConnection(db)
 
-	r := gin.Default()
+	gin := gin.Default()
 
-	md := utils.GetBoolEnv("MULTIDEVICE_ENABLED", false)
+	port := utils.GetStringEnv("APP_PORT", "8080")
 
-	userRepository := repositories.NewUserSsRepository(db)
-	userService := services.NewUserSSService(userRepository, md)
-	userController := controller.NewUserSessionController(userService)
+	userController := GetDependencies(db)
 
-	http.NewAppHandler(r, userController)
+	http.NewAppHandler(gin, userController)
 
-	r.Run()
+	gin.Run(":" + port)
 }

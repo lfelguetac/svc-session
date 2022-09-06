@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 
-	// "github.com/go-redis/redis"
 	redis "github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
 )
@@ -29,10 +28,18 @@ func SetupDBConnection() *redis.Client {
 
 	pong, err := client.Ping(ctx).Result()
 	if err != nil {
-		// fmt.Println(err)
 		log.Fatal(err)
 	}
 	fmt.Println(pong)
 
 	return client
+}
+
+func CloseDBConnection(db *redis.Client) {
+	log.Println("errCloseDB : ", db)
+	errCloseDB := db.Close()
+	log.Println("errCloseDB : ", errCloseDB)
+	if errCloseDB != nil {
+		panic("Fail to close connection")
+	}
 }
