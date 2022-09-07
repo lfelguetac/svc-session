@@ -1,0 +1,32 @@
+variables:
+  IMAGE_NAME: "hub.fif.tech/fif-payments-wallet/go-usersession"
+
+image:
+  name: hub.fif.tech/base/fif-common-pm2:12.10.0-3.5.0-2
+
+stages:
+  - build
+
+.build-kaniko:
+  image: hub.fif.tech/base/fif-kaniko:1.0.0
+  variables:
+    DOCKER_BUILD_PATH: "$CI_PROJECT_DIR/"
+    DOCKER_FILE: "$CI_PROJECT_DIR/Dockerfile"
+  tags:
+    - payments-gitlab-runner
+
+
+build-image:
+  only:
+    - tags
+  extends: .build-kaniko
+  stage: build
+  before_script:
+    - export DESTINATION="$IMAGE_NAME:$CI_COMMIT_REF_NAME"
+  script:
+    - echo $HARBOR_AUTH > /kaniko/.docker/config.json
+    - | 
+        /kaniko/executor \
+        --context $DOCKER_BUILD_PATH \
+        --dockerfile $DOCKER_FILE \
+        --destination $DESTINATION
