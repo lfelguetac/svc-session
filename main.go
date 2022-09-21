@@ -9,16 +9,17 @@ import (
 )
 
 func main() {
+
 	db := config.SetupDBConnection()
 	defer config.CloseDBConnection(db)
 
-	gin := gin.Default()
+	app := gin.Default()
 
 	port := utils.GetStringEnv("APP_PORT", "8080")
 
 	userController := GetDependencies(db)
 
-	http.NewAppHandler(gin, userController)
+	http.NewAppHandler(app, userController)
 
-	gin.Run(":" + port)
+	app.Run(":" + port)
 }
