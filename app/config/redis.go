@@ -3,25 +3,18 @@ package config
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"log"
 	"os"
+	"session-service-v2/app/logger"
 	"strconv"
 
 	redis "github.com/go-redis/redis/v8"
-	"github.com/joho/godotenv"
 )
 
 var ctx = context.Background()
+var logg *logger.FpayLogger = logger.GetLogger()
 
 func SetupDBConnection() *redis.Client {
-	_err := godotenv.Load()
-	if _err != nil {
-		fmt.Println("Error loading .env file" + _err.Error())
-	}
-
-	// ttl: Number(process.env.NODE_REDIS_TTL),
-	// tls: (process.env.REDIS_USE_TLS === 'true')
 
 	db, _ := strconv.Atoi(os.Getenv("NODE_REDIS_DB_NUMBER"))
 	client := redis.NewClient(&redis.Options{
@@ -31,11 +24,13 @@ func SetupDBConnection() *redis.Client {
 		TLSConfig: &tls.Config{},
 	})
 
-	pong, err := client.Ping(ctx).Result()
+	_, err := client.Ping(ctx).Result()
 	if err != nil {
+		logg.Error("error configuring redis...")
 		log.Fatal(err)
 	}
-	fmt.Println(pong)
+
+	logg.Info("Redis configuration set successfully")
 
 	return client
 }
