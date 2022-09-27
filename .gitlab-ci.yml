@@ -1,5 +1,5 @@
 variables:
-  IMAGE_NAME: "hub.fif.tech/fif-payments-wallet/go-usersession"
+  IMAGE_NAME: "hub.fif.tech/fif-payments-wallet/api-session"
 
 image:
   name: hub.fif.tech/base/fif-common-pm2:12.10.0-3.5.0-2
