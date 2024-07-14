@@ -27,17 +27,12 @@ WORKDIR /dist
 # Copy binary from build to main folder
 RUN cp /build/main .
 
+
 # Build a small image
 FROM alpine
 
-# Vault config
-RUN apk add --update --upgrade --no-cache ca-certificates curl curl-dev bash
-RUN curl https://releases.hashicorp.com/envconsul/0.8.0/envconsul_0.8.0_linux_amd64.zip -O && \
-    unzip envconsul_0.8.0_linux_amd64.zip -d /bin && \
-    rm envconsul_0.8.0_linux_amd64.zip
 
 COPY --from=builder /dist/main /
-COPY --from=builder /build/startup.sh /
 
 # Command to run
-CMD ["/bin/sh", "/startup.sh"]
+CMD ["/bin/sh", "/main"]

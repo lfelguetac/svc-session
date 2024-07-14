@@ -78,11 +78,6 @@ func TestGetUserSessions(t *testing.T) {
 
 	ctrl, mr, _, keyID := BeforeTest(t)
 
-	// payload, _ := json.Marshal(reqBody)
-	// testContextPost, _ := gin.CreateTestContext(httptest.NewRecorder())
-	// testContextPost.Request, _ = http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
-	// ctrl.CreateUserSession(testContextPost)
-
 	mr.Set(keyID, "anything")
 	str, _ := mr.Get(keyID)
 	t.Logf("keyID: %s", str)

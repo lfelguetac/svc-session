@@ -27,7 +27,7 @@ func main() {
 
 	app := gin.Default()
 
-	port := utils.GetStringEnv("APP_PORT", "8080")
+	port := utils.GetStringEnv("APP_PORT", "8085")
 
 	userController := GetDependencies(db)
 
