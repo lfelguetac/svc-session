@@ -1,29 +1,38 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"session-service-v2/app/config"
-	"session-service-v2/app/delivery/controller"
 	"session-service-v2/app/delivery/http"
-	"session-service-v2/app/repositories"
-	"session-service-v2/app/services"
 	"session-service-v2/app/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	appEnv := os.Getenv("APP_ENV")
+	if appEnv != "prod" {
+		_err := godotenv.Load()
+		if _err != nil {
+			fmt.Println("Error loading .env file" + _err.Error())
+		}
+	}
+
 	db := config.SetupDBConnection()
-	// defer config.CloseDBConnection(db)
+	defer config.CloseDBConnection(db)
 
-	r := gin.Default()
+	app := gin.Default()
 
-	md := utils.GetBoolEnv("MULTIDEVICE_ENABLED", false)
+	port := utils.GetStringEnv("APP_PORT", "8085")
 
-	userRepository := repositories.NewUserSsRepository(db)
-	userService := services.NewUserSSService(userRepository, md)
-	userController := controller.NewUserSessionController(userService)
+	userController := GetDependencies(db)
 
-	http.NewAppHandler(r, userController)
+	http.NewAppHandler(app, userController)
 
-	r.Run()
+	log.Printf("Server stopped, err: %v", app.Run(":"+port))
+
 }

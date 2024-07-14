@@ -75,7 +75,7 @@ func (ctr *controller) GetUserSessions(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, sessions)
-	return
+
 }
 
 func (ctr *controller) GetUserSession(c *gin.Context) {
@@ -89,7 +89,6 @@ func (ctr *controller) GetUserSession(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, session)
-	return
 }
 
 func (ctr *controller) DeleteUserSessions(c *gin.Context) {
@@ -100,7 +99,6 @@ func (ctr *controller) DeleteUserSessions(c *gin.Context) {
 		return
 	}
 	c.AbortWithStatus(http.StatusOK)
-	return
 }
 
 func (ctr *controller) DeleteUserSession(c *gin.Context) {
@@ -114,5 +112,4 @@ func (ctr *controller) DeleteUserSession(c *gin.Context) {
 		return
 	}
 	c.AbortWithStatus(http.StatusOK)
-	return
 }

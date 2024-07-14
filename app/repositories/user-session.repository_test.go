@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/alicebob/miniredis/v2"
-	// "github.com/go-redis/redis"
 	redis "github.com/go-redis/redis/v8"
 )
 
@@ -17,7 +16,7 @@ func BeforeTest(t *testing.T) (repositories.UserSessionRepository, *miniredis.Mi
 		Addr: s.Addr(),
 	})
 	// defer s.Close()
-	userRepo := repositories.NewUserSsRepository(client)
+	userRepo := repositories.NewUsersRepository(client)
 	return userRepo, s
 }
 
@@ -41,6 +40,16 @@ func TestSetUserSession(t *testing.T) {
 		t.Error("Session is not saved ", err)
 	}
 
+	t.Run("test err handler", func(t *testing.T) {
+		expectedErr := "mock-error"
+		s.SetError(expectedErr)
+		err := userRepo.SetUserSession(userId, userSession, "t")
+		t.Log("errerrerrerrerrerrerr; ", err)
+		if err.Error() != expectedErr {
+			t.Errorf("ERROR expected %s but got %s", expectedErr, err.Error())
+		}
+	})
+
 }
 
 func TestGetUserSessions(t *testing.T) {
@@ -62,32 +71,23 @@ func TestGetUserSessions(t *testing.T) {
 		t.Errorf("ERROR expected %s but got nil", userSession)
 	}
 
-	t.Run("multiDevice  false", func(t *testing.T) {
+	t.Run("test err handler", func(t *testing.T) {
+		expected := "id not found"
+		s.SetError("mock error")
+		userRepo.SetUserSession(userId, userSession, "t")
+		_, err := userRepo.GetUserSessions(userId)
+		if err.Error() != expected {
+			t.Errorf("ERROR expected %s but got %s", expected, err.Error())
+		}
 
-		// mr := miniredis.RunT(t)
-		// client := redis.NewClient(&redis.Options{
-		// 	Addr: mr.Addr(),
-		// })
-
-		// userSsRepo := repositories.NewUserSsRepository(client)
-		// svc := services.NewUserSSService(userSsRepo, false)
-
-		// mr.Set(userID, "anything")
-		// err := svc.CreateUserSession(userID, "client", mockSession, "lala")
-
-		// if err != nil {
-		// 	t.Errorf("FAIL err: expected nil but got %s ", err)
-		// }
-		defer s.Close()
 	})
 
 }
 
 func TestDeleteUserSessions(t *testing.T) {
+
 	userRepo, s := BeforeTest(t)
-
 	userId := "pepe"
-
 	session := model.SessionData{
 		Token:        "123",
 		RefreshToken: "123",
@@ -98,7 +98,6 @@ func TestDeleteUserSessions(t *testing.T) {
 	}
 
 	userRepo.SetUserSession(userId, userSession, "t")
-
 	userRepo.DeleteUserSessions(userId)
 
 	_, err := s.Get(userId)
@@ -106,8 +105,13 @@ func TestDeleteUserSessions(t *testing.T) {
 		t.Errorf("expected %s but got nil", err)
 	}
 
-	// t.Run("err != nil", func(t *testing.T) {
-
-	// })
+	t.Run("test err handler", func(t *testing.T) {
+		expectedErr := "mock-error-delete"
+		s.SetError(expectedErr)
+		err := userRepo.DeleteUserSessions(userId)
+		if err.Error() != expectedErr {
+			t.Errorf("ERROR expected %s but got %s", expectedErr, err.Error())
+		}
+	})
 
 }

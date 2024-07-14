@@ -4,8 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
+	"session-service-v2/app/logger"
 	"session-service-v2/app/model"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 )
 
 var ctx = context.Background()
+var log *logger.FpayLogger = logger.GetLogger()
 
 type UserSessionRepository interface {
 	SetUserSession(userId string, userSession model.UserSession, ttl string) error
@@ -25,7 +25,7 @@ type db struct {
 	dbConnection *redis.Client
 }
 
-func NewUserSsRepository(redisC *redis.Client) UserSessionRepository {
+func NewUsersRepository(redisC *redis.Client) UserSessionRepository {
 	return &db{
 		dbConnection: redisC,
 	}
@@ -35,10 +35,8 @@ func (r *db) SetUserSession(userId string, userSession model.UserSession, ttl st
 	us, _ := json.Marshal(userSession)
 	_err := r.dbConnection.Set(ctx, userId, us, GetTtlTime(ttl)).Err()
 
-	log.Println("_err: ", _err)
-
 	if _err != nil {
-		fmt.Println(_err)
+		log.Error(_err.Error())
 		return errors.New(_err.Error())
 	}
 	return nil
@@ -50,7 +48,7 @@ func (r *db) GetUserSessions(userId string) (*model.UserSession, error) {
 	var userSession model.UserSession
 	json.Unmarshal(result, &userSession)
 	if _err != nil {
-		fmt.Println(_err)
+		log.Error(_err.Error())
 		return nil, errors.New("id not found")
 	}
 	return &userSession, nil
@@ -59,7 +57,7 @@ func (r *db) GetUserSessions(userId string) (*model.UserSession, error) {
 func (r *db) DeleteUserSessions(userId string) error {
 	_err := r.dbConnection.Del(ctx, userId).Err()
 	if _err != nil {
-		fmt.Println(_err)
+		log.Error(_err.Error())
 		return errors.New(_err.Error())
 	}
 	return nil

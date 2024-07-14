@@ -27,43 +27,40 @@ func init() {
 	hostName, _ = os.Hostname()
 }
 
-// type FpayLogger interface {
-// }
-
 type FpayLogger struct {
 	logEntry *log.Entry
 }
 
 func (logger *FpayLogger) Info(message string, args ...interface{}) {
 	if len(args) == 0 {
-        logger.logEntry.Info(message)
-    } else {
+		logger.logEntry.Info(message)
+	} else {
 		logger.logEntry.WithField("metadata", args[0]).Info(message)
-    }
+	}
 }
 
 func (logger *FpayLogger) Warn(message string, args ...interface{}) {
 	if len(args) == 0 {
-        logger.logEntry.Warn(message)
-    } else {
+		logger.logEntry.Warn(message)
+	} else {
 		logger.logEntry.WithField("metadata", args[0]).Warn(message)
-    }
+	}
 }
 
 func (logger *FpayLogger) Error(message string, args ...interface{}) {
 	if len(args) == 0 {
-        logger.logEntry.Error(message)
-    } else {
+		logger.logEntry.Error(message)
+	} else {
 		logger.logEntry.WithField("metadata", args[0]).Error(message)
-    }
+	}
 }
 
 func (logger *FpayLogger) Debug(message string, args ...interface{}) {
 	if len(args) == 0 {
-        logger.logEntry.Debug(message)
-    } else {
+		logger.logEntry.Debug(message)
+	} else {
 		logger.logEntry.WithField("metadata", args[0]).Debug(message)
-    }
+	}
 }
 
 func GetLogger() *FpayLogger {
@@ -113,16 +110,16 @@ func createLogger() *log.Entry {
 
 	// Setting default fields
 	return logger.WithFields(log.Fields{
-		"country": country,
+		"country":     country,
 		"serviceHost": hostName,
-		"service": serviceName,
+		"service":     serviceName,
 		"environment": env,
-		"source": "go",
-		"version": "1.0.0", // TODO: retrieve image version
-		"app": "common",
-		"team": "wallet"})
+		"source":      "go",
+		"version":     "1.0.0", // TODO: retrieve image version
+		"app":         "common",
+		"team":        "wallet"})
 
-    // TODO: write header fields
+	// TODO: write header fields
 
 }
 

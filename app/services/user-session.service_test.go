@@ -17,7 +17,7 @@ func BeforeTest(t *testing.T, md bool) (services.UserService, *miniredis.Minired
 	client := redis.NewClient(&redis.Options{
 		Addr: s.Addr(),
 	})
-	userSsRepo := repositories.NewUserSsRepository(client)
+	userSsRepo := repositories.NewUsersRepository(client)
 
 	mockSession := model.SessionData{
 		Token:        "token_110010101101",
@@ -31,7 +31,7 @@ func BeforeTest(t *testing.T, md bool) (services.UserService, *miniredis.Minired
 		Ttl:          "ttl123",
 	}
 
-	return services.NewUserSSService(userSsRepo, md), s, mockSession
+	return services.NewUserService(userSsRepo, md), s, mockSession
 }
 
 func TestCreateUserSession(t *testing.T) {
@@ -63,8 +63,8 @@ func TestCreateUserSession(t *testing.T) {
 			Addr: mr.Addr(),
 		})
 
-		userSsRepo := repositories.NewUserSsRepository(client)
-		svc := services.NewUserSSService(userSsRepo, false)
+		userSsRepo := repositories.NewUsersRepository(client)
+		svc := services.NewUserService(userSsRepo, false)
 
 		mr.Set(userID, "anything")
 		err := svc.CreateUserSession(userID, "client", mockSession, "lala")
